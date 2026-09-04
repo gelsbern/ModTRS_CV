@@ -1,1 +1,0 @@
-{"id":"modtrsproxy","name":"ModTRSProxy","version":"3.0.0-SNAPSHOT","description":"NubCraft ModTRS cross-server connection bridge","authors":["Nubcraft"],"dependencies":[],"provides":[],"main":"org.nubcraft.modtrsproxy.ModTRSProxy"}
