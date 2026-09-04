@@ -1,2 +1,50 @@
-General Instructions: https://github.com/yetanotherx/ModTRS/wiki
+# ModTRS for NubCraft
 
+Modern Paper/Velocity continuation of the original ModTRS moderator request system.
+
+## Architecture
+
+- Paper 1.21.8 / Java 21 backend plugin (`ModTRS.jar`)
+- Velocity companion plugin (`velocity/target/ModTRSProxy.jar`)
+- Shared MariaDB database for tickets, bans, network events, and pending cross-server teleports
+- Each backend sets a unique `server-name` matching its Velocity backend name (`survival`, `creative`, `hub`, etc.)
+
+Because all backends use the same database, `/check` and `/check-id` show the same ticket queue everywhere. Ticket events are synchronized between running backends so staff receive new-request and status notifications regardless of which backend they are playing on.
+
+`/tp-id <id>` works across servers: the backend queues the destination, asks the Velocity companion to move the staff member to the ticket's backend, and the destination ModTRS instance teleports them to the ticket location after they arrive.
+
+## Player commands
+
+- `/modreq <message>` - submit a request
+- `/check` - view your own requests
+- `/check-id <id>` - view one of your requests
+
+## Staff commands
+
+- `/check [page]`
+- `/check-id <id>`
+- `/claim <id>`
+- `/unclaim <id>`
+- `/hold <id>`
+- `/reopen <id>`
+- `/complete <id> [staff note]`
+- `/tp-id <id>`
+
+Administrators also receive `/modreq-ban`, `/modreq-unban`, and `/modtrs reload`.
+
+## Build
+
+Backend:
+
+```bash
+mvn -DskipTests package
+```
+
+Velocity companion (Velocity 4.1.1's annotation processor requires Java 25 at build time, while the generated plugin bytecode targets Java 21):
+
+```bash
+cd velocity
+JAVA_HOME=/usr/lib/jvm/temurin-25-jdk-amd64 \
+PATH=/usr/lib/jvm/temurin-25-jdk-amd64/bin:$PATH \
+mvn -DskipTests package
+```

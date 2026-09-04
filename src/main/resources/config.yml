@@ -1,20 +1,13 @@
-#ModTRS configuration!
-modtrs:
-  
-  #Words that a user is not allowed to say in a mod request (e.g. ['flymod', 'you suck', 'etc'])
-  blacklist: []
-    
-  #Notify mods when someone makes a new request
-  notify_mods: true
-    
-  #Whenever someone runs a ModTRS command, log it in the console
-  log_commands: true
-    
-  #How many requests a user is allowed to have open at one time
-  max_requests: 5
-    
-  #How many requests should show up per page on /check
-  requests_per_page: 5
-  
-  #For development only, no need for users to use this
-  debug: false
+# Backend identifier stored with each request. Change this when the Survival
+# template is copied to Hub or Creative.
+server-name: survival
+
+max-open-requests: 5
+requests-per-page: 8
+
+database:
+  host: 127.0.0.1
+  port: 3306
+  name: modtrs
+  username: crafty
+  password: ''

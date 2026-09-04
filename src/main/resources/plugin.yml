@@ -1,80 +1,105 @@
 name: ModTRS
-main: yetanotherx.bukkitplugin.ModTRS.ModTRS
-version: 2.1
-database: true
+version: '3.0.0-SNAPSHOT'
+main: org.nubcraft.modtrs.ModTRS
+api-version: '1.21.8'
+author: Greg Elsbernd
+description: NubCraft moderator request ticket system
+
 commands:
-    modreq:
-        description: Request help from a moderator
-        usage: /<command> [message]
-    check:
-        description: List all the currently open requests. Use p:# to go to a page, and t:open/t:all to change the type of the request
-        usage: /<command> [p:#] [t:open|all]
-    check-id:
-        description: Read a request
-        usage: /<command> [id]
-        aliases: [checkid]
-    tp-id:
-        description: Teleport to the location of a request
-        usage: /<command> [id]
-        aliases: [tpid]
-    claim:
-        description: Claim a request
-        usage: /<command> [id]
-    unclaim:
-        description: Unclaim a request
-        usage: /<command> [id]
-    complete:
-        description: Mark a request as complete
-        usage: /<command> [id]
-        aliases: [done]
-    reopen:
-        description: Reopen a request
-        usage: /<command> [id]
-    hold:
-        description: Put request on hold
-        usage: /<command> [id]
-    modreq-ban:
-        description: Ban a user from making mod requests
-        usage: /<command> [username]
-    modreq-unban:
-        description: Reallow a user to make mod requests
-        usage: /<command> [username]
-    modtrs:
-        description: Command line only
-        usage: /<command>
+  modreq:
+    description: Request assistance from server staff
+    usage: /modreq <message>
+    aliases: [modrequest]
+    permission: modtrs.command.modreq
+  check:
+    description: List moderator requests available to you
+    usage: /check [page]
+  check-id:
+    description: Show a moderator request
+    usage: /check-id <id>
+    aliases: [checkid]
+  claim:
+    description: Claim a moderator request
+    usage: /claim <id>
+    permission: modtrs.command.complete
+  unclaim:
+    description: Return a request to the open queue
+    usage: /unclaim <id>
+    permission: modtrs.command.complete
+  complete:
+    description: Complete a moderator request
+    usage: /complete <id> [staff note]
+    aliases: [done]
+    permission: modtrs.command.complete
+  reopen:
+    description: Reopen a moderator request
+    usage: /reopen <id>
+    permission: modtrs.command.complete
+  hold:
+    description: Put a moderator request on hold
+    usage: /hold <id>
+    permission: modtrs.command.complete
+  tp-id:
+    description: Teleport to the location where a request was submitted
+    usage: /tp-id <id>
+    aliases: [tpid]
+    permission: modtrs.command.teleport
+  modreq-ban:
+    description: Prevent a player from submitting moderator requests
+    usage: /modreq-ban <player> [reason]
+    permission: modtrs.command.ban
+  modreq-unban:
+    description: Allow a player to submit moderator requests again
+    usage: /modreq-unban <player>
+    permission: modtrs.command.unban
+  modtrs:
+    description: ModTRS administration
+    usage: /modtrs reload
+    permission: modtrs.admin
+
 permissions:
-    modtrs:
-        description: Grants all permissions for ModTRS.
-        children:
-            modtrs.command.ban: false 
-            modtrs.command.check: false 
-            modtrs.command.check.self: true
-            modtrs.command.complete: false 
-            modtrs.command.broadcast: false 
-            modtrs.command.modlist: true
-            modtrs.command.modreq: true
-            modtrs.mod: false 
-            modtrs.command.reload: false 
-            modtrs.command.teleport: false 
-            modtrs.command.unban: false 
-            modtrs.command.version: true
-    modtrs.command.ban:
-        description: Permission to use /modreq-ban
-    modtrs.command.check: 
-        description: Permission to use /check to see all open requests
-    modtrs.command.check.self:
-        description: Permission to use /check to see your own requests
-    modtrs.command.complete: 
-        description: Permission to use /done, /claim, /unclaim, /hold
-    modtrs.command.modlist:
-        description: Permission to use /modlist
-    modtrs.command.modreq:
-        description: Permission to use /modreq
-    modtrs.command.reload:
-        description: Permission to use /modtrs reload
-    modtrs.command.teleport:
-        description: Permission to use /tp-id
-    modtrs.command.unban:
-        description: Permission to use /modreq-unban
-    modtrs.command.version:
-        description: Permission to use /modtrs version
+  modtrs.player:
+    description: Standard player access to ModTRS
+    default: false
+    children:
+      modtrs.command.modreq: true
+      modtrs.command.check.self: true
+
+  modtrs.staff:
+    description: Staff ticket management and notifications
+    default: false
+    children:
+      modtrs.player: true
+      modtrs.command.check: true
+      modtrs.command.complete: true
+      modtrs.command.teleport: true
+
+  modtrs.admin:
+    description: Full ModTRS administration
+    default: op
+    children:
+      modtrs.staff: true
+      modtrs.command.ban: true
+      modtrs.command.unban: true
+
+  modtrs.command.modreq:
+    description: Submit moderator requests
+    default: false
+  modtrs.command.check.self:
+    description: View your own moderator requests
+    default: false
+  modtrs.command.check:
+    description: View all open moderator requests
+    default: false
+  modtrs.command.complete:
+    description: Claim, hold, reopen, unclaim and complete requests
+    default: false
+  modtrs.command.teleport:
+    description: Teleport to a request location
+    default: false
+  modtrs.command.ban:
+    description: Ban players from submitting moderator requests
+    default: false
+  modtrs.command.unban:
+    description: Unban players from submitting moderator requests
+    default: false
